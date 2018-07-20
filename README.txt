@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include <string>
 #include <iostream>
 #include <windows.h>
@@ -39,9 +41,15 @@ void remove_cursor()
 
 void screen_width()
 {
-	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE),CONSOLE_FULLSCREEN_MODE,0); 
+	DEVMODE desiredMode = { 0 };
+	desiredMode.dmSize = sizeof(DEVMODE);
+	desiredMode.dmPelsWidth = 640;
+	desiredMode.dmPelsHeight = 480;
+	desiredMode.dmFields = DM_PELSHEIGHT | DM_PELSWIDTH;
+	LONG res = ChangeDisplaySettings(&desiredMode, CDS_UPDATEREGISTRY | CDS_GLOBAL | CDS_RESET);
+	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 }
 
-random_device rd; 
-mt19937 eng(rd()); 
+random_device rd; // obtain a random number from hardware
+mt19937 eng(rd()); // seed the generator
 uniform_int_distribution<> distr(2, 48);

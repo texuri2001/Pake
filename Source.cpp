@@ -58,14 +58,21 @@ void remove_cursor()
 
 void screen_width()
 {
-	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE),CONSOLE_FULLSCREEN_MODE,0); 
+	DEVMODE desiredMode = { 0 };
+	desiredMode.dmSize = sizeof(DEVMODE);
+	desiredMode.dmPelsWidth = 640;
+	desiredMode.dmPelsHeight = 480;
+	desiredMode.dmFields = DM_PELSHEIGHT | DM_PELSWIDTH;
+	LONG res = ChangeDisplaySettings(&desiredMode, CDS_UPDATEREGISTRY | CDS_GLOBAL | CDS_RESET);
+	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 }
 
 random_device rd; // obtain a random number from hardware
 mt19937 eng(rd()); // seed the generator
 uniform_int_distribution<> distr(2, 48);
 int Mobsleft;
-int f = 1, g = 1,a,b, x, y,prvx,prvy, i, j,aux, wpnx, wpny, zV=1,zT = 1,bT = 1,mT = 1,wT = 1,wTi[100],axecount, Macelength, Arrowdir[100],Arrownr,Macedir,Sworddir,shotdelaycountdown, shotdelay , weapon = 3,Bowx1[100],Bowy1[100],Macex1[100],Macey1[100],VNPCx[100],VNPCy[100],Wx[100],Wy[100],TV,teleportdelay[100],teleportdelaycountdown[100], Tx1[100], Ty1[100], TNPCnri, Tx2[100], Ty2[100], Tdifx[100], Tdify[100], TNPCstats[100], TimerTAI[100], n[100], m[100], k[100][100], l[100][100], AT[100], TT[100], T = 0, SNPCx[100], SNPCy[100], Sdifx[100], Sdify[100], ANPCx[100], ANPCy[100], TNPCx[100], TNPCy[100], vx[100][100], vy[100][100],Wdifx[100][100],Wdify[100][100],WNPCx1[100][100],WNPCy1[100][100], WNPCx2[100][100], WNPCy2[100][100],Wormlength[100],Wormrespawn[100],Wlock[100],rotation[100],WAIperceptionpoint[100],Wormstep[100],WAIkeepencircle[100],Slowworm[100],Wrap, wTcif, h = 1, H[100], r, SCORE = 0, LIVES = 3, z = 1, q = 1, Mobskilled = 0, milsec, sec, min, wavenr = 1, countdown = 60, MenuTimer = 0,durability = 1,dialog,shopcoursorconstant, useboost[5], defboost[5],priceincrease[3];
+string shopindicator[5], exitindicator[5];
+int f = 1, g = 1,a,b, x, y,prvx,prvy, i, j,aux, wpnx, wpny, zV=1,zT = 1,bT = 1,mT = 1,wT = 1,wTi[100],axecount, Macelength, Arrowdir[100],Arrownr,Macedir,Sworddir,shotdelaycountdown, shotdelay , weapon = 3,Bowx1[100],Bowy1[100],Macex1[100],Macey1[100],VNPCx[100],VNPCy[100],Wx[100],Wy[100],TV,teleportdelay[100],teleportdelaycountdown[100], Tx1[100], Ty1[100], TNPCnri, Tx2[100], Ty2[100], Tdifx[100], Tdify[100], TNPCstats[100], TimerTAI[100], n[100], m[100], k[100][100], l[100][100], AT[100], TT[100], T = 0, SNPCx[100], SNPCy[100], Sdifx[100], Sdify[100], ANPCx[100], ANPCy[100], TNPCx[100], TNPCy[100], vx[100][100], vy[100][100],Wdifx[100][100],Wdify[100][100],WNPCx1[100][100],WNPCy1[100][100], WNPCx2[100][100], WNPCy2[100][100],Wormlength[100],Wormrespawn[100],Wlock[100],rotation[100],WAIperceptionpoint[100],Wormstep[100],WAIkeepencircle[100],Slowworm[100],Wrap, wTcif, h = 1, H[100], r, SCORE = 0, LIVES = 3, z = 1, q = 1, Mobskilled = 0, milsec, sec, min, wavenr = 1, countdown = 60, MenuTimer = 0,durability = 1,dialog,shopcoursorconstant, useboost[5], defboost[5],priceincrease[3],stones[100][100],stonerarity,time;
 int
 bowuses = 6,
 maceuses = 3,
@@ -91,7 +98,7 @@ WNPCnr = 0;
 float xTimes = 4;
 float xMobs = 4;
 float Trap[100],Srap[100];
-bool wpn = true, NPCdeath = false, ANPCdeath = false, PLAYERdeath = false, NPCrespawn = false, swch = false, spiketrap = false, wpnSpike = false, mortalspike = false, waveif = true, stoptimeif = false, wavestoptime = false, bugstopwpnrespawnNPC = false, Tattack = false, leavegame = false, menuif = true, TNPCdir, SNPCdir, SAIattackif, Tifcst = true, enchantedweapon = true, wpnrespawn = false, despawnmace = false, swordattackif = false, axeattackif = false, WNPCdir, waveroomif = false, entershop = false, clearwaveroom = false, leavequestionif = false,leaveshopapproach = false, shopinsideif = true, didbuysomething = false, weaponsshopkeepermenuif = true;
+bool wpn = true, NPCdeath = false, ANPCdeath = false, PLAYERdeath = false, NPCrespawn = false, swch = false, spiketrap = false, wpnSpike = false, mortalspike = false, waveif = true, stoptimeif = false, wavestoptime = false, bugstopwpnrespawnNPC = false, Tattack = false, leavegame = false, menuif = true, TNPCdir, SNPCdir, SAIattackif, Tifcst = true, enchantedweapon = true, wpnrespawn = false, despawnmace = false, swordattackif = false, axeattackif = false, WNPCdir, waveroomif = false, entershop = false, clearwaveroom = false, leavequestionif = false, leaveshopapproach = false, shopinsideif = true, didbuysomething = false, weaponsshopkeepermenuif = true, angryshopkeeper = false;
 
 
 void restartall()
@@ -177,11 +184,13 @@ void vinesfunction()
 	Vines[0] = " ____                  _____/\\                ____ ";
 	Vines[1] = "/_   }>     ____/\\____( \\/    )____/\\___     {   _\\";
 	Vines[2] = "\\_)  \\_____(        \\/          \\/    \\/)____/  (_/";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);
 	for (i = 0; i <= 2; i++)
 	{
 		gotoxy(0, i);
 		cout << Vines[i];
 	}
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 }
 
 void weapons()
@@ -297,11 +306,53 @@ void showweaponcursor()
 	}
 }
 
-void controlsmenu()
+void menuoptions()
 {
-	clearall();
-	
+	string Play[3];
+	Play[0] = "   _      _      _______      ";
+	Play[1] = " /_/ /  /_/ |_/ ||===|==|  </)";
+	Play[2] = "/   /_ / /   /   \\::|:/   /  ";
 
+	string GameSettings[3];
+	GameSettings[0] = "*_  _     *_   _ *_ ___ .   * _  _*";
+	GameSettings[1] = "/*_|_||\\/||_  |_ |_ | | ||\\ |/ _|_ ";
+	GameSettings[2] = "\\_/| ||* ||_  *_||_ | |*|| \\|\\_/*_|";
+
+	string Weapons[3];
+	Weapons[0] = "     ||        _  _  _  _      _   ";
+	Weapons[1] = "[==={o|\\##|##/|_#|_||_||#||\\#||_##>";
+	Weapons[2] = "     || \\/ \\/ |_ | ||  |_|| \\| _|  ";
+
+	string Leave[3];
+	Leave[0] = "   _  _      _     /|  |";
+	Leave[1] = "| |_ |_||  ||_    | |__|";
+	Leave[2] = "|_|_ | | \\/ |_    |/    ";
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
+	for (i = 0; i <= 2; i++)
+	{
+		gotoxy(1, 4 + i);
+		cout << Play[i];
+	}
+	for (i = 0; i <= 2; i++)
+	{
+		gotoxy(1, 8 + i);
+		cout << GameSettings[i];
+	}
+	for (i = 0; i <= 2; i++)
+	{
+		gotoxy(1, 12 + i);
+		cout << Weapons[i];
+	}
+	for (i = 0; i <= 2; i++)
+	{
+		gotoxy(1, 16 + i);
+		cout << Leave[i];
+	}
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+}
+void gamesettingsmenuoptions()
+{
 	string Volume[3];
 	Volume[0] = "     _            _";
 	Volume[1] = "|  || ||  | ||\\/||_";
@@ -327,27 +378,95 @@ void controlsmenu()
 	Box[1] = "[___]";
 	Box[2] = "  %  ";
 
-	for (i = 8; i <= 18; i = i + 2)
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
+	for (i = 0; i <= 2; i++)
 	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);
-		gotoxy(40, i);
+		gotoxy(1, 4 + i);
+		cout << Controls[i];
+	}
+	for (i = 0; i <= 2; i++)
+	{
+		gotoxy(1, 8 + i);
+		cout << Volume[i];
+	}
+	for (i = 0; i <= 2; i++)
+	{
+		gotoxy(1, 12 + i);
+		cout << GameSpeed[i];
+	}
+	for (i = 0; i <= 2; i++)
+	{
+		gotoxy(1, 16 + i);
+		cout << MobsNumber[i];
+	}
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+
+	for (j = 8; j <= 16; j = j + 4)
+		for (i = 0; i <= 2; i++)
+		{
+			gotoxy(32, i + j);
+			cout << Box[i];
+		}
+}
+void precentageoptions()
+{
+	if (xTimes >= 4)
+	{
+		gotoxy(33, 13);
+		cout << (xTimes / 4) * 100;
+	}
+	else
+		if (xTimes < 4)
+		{
+			gotoxy(33, 13);
+			cout << "_";
+			gotoxy(34, 13);
+			cout << (xTimes / 4) * 100;
+		}
+	if (xMobs >= 4)
+	{
+		gotoxy(33, 17);
+		cout << (xMobs / 4) * 100;
+	}
+	else
+		if (xMobs < 4)
+		{
+			gotoxy(33, 17);
+			cout << "_";
+			gotoxy(34, 17);
+			cout << (xMobs / 4) * 100;
+		}
+}
+
+void controlsmenu()
+{
+	clearall();
+	vinesfunction();
+
+	for (i = 8; i <= 20; i = i + 2)
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+		gotoxy(39, i);
 		if (i == 8)
-			cout << "    KEY_UP";
+			cout << "     KEY_UP";
 		else
 			if (i == 10)
-	            cout << "  KEY_DOWN";
+	            cout << "   KEY_DOWN";
 			else
 				if (i == 12)
-			        cout << "  KEY_LEFT";
+			        cout << "   KEY_LEFT";
 				else
 					if (i == 14)
-					    cout << " KEY_RIGHT";
+					    cout << "  KEY_RIGHT";
 					else
 						if (i == 16)
-							cout << " KEY_SPACE";
+							cout << "  KEY_SPACE";
 						else
 							if (i == 18)
-					    		cout << "KEY_ESCAPE";
+					    		cout << "KEY_1,2,3,4";
+							else
+								if(i == 20)
+									cout << " KEY_ESCAPE";
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		gotoxy(1, i);
 		if (i == 8)
@@ -377,11 +496,14 @@ void controlsmenu()
 						else
 							if (i == 18)
 							{
-								cout << "PAUSE GAME:";
+								cout << "SHIFT WEAPON:";
 							}
+							else
+								if (i == 20)
+								{
+									cout << "PAUSE GAME:";
+								}
 	}
-
-	vinesfunction();
 
 	bool controlssettingsmenuif = true;
 	while (controlssettingsmenuif == true)
@@ -400,177 +522,20 @@ void controlsmenu()
 	}
 	clearall();
 	showweaponcursor();
-	MenuTimer = 0;
-
-	for (j = 8; j <= 16; j = j + 4)
-		for (i = 0; i <= 2; i++)
-		{
-			gotoxy(32, i + j);
-			cout << Box[i];
-		}
-
-	if (xTimes >= 4)
-	{
-		gotoxy(33, 13);
-		cout << (xTimes / 4) * 100;
-	}
-	else
-		if (xTimes < 4)
-		{
-			gotoxy(33, 13);
-			cout << "_";
-			gotoxy(34, 13);
-			cout << (xTimes / 4) * 100;
-		}
-	if (xMobs >= 4)
-	{
-		gotoxy(33, 17);
-		cout << (xMobs / 4) * 100;
-	}
-	else
-		if (xMobs < 4)
-		{
-			gotoxy(33, 17);
-			cout << "_";
-			gotoxy(34, 17);
-			cout << (xMobs / 4) * 100;
-		}
-
 	vinesfunction();
-
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 4 + i);
-		cout << Controls[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 8 + i);
-		cout << Volume[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 12 + i);
-		cout << GameSpeed[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 16 + i);
-		cout << MobsNumber[i];
-	}
+	gamesettingsmenuoptions();
+	precentageoptions();
+	MenuTimer = 0;
 }
 
 void gamesettingsmenu()
 {
 	clearall();
-
 	vinesfunction();
-
-	string Play[3];
-	Play[0] = "   _      _      _______      ";
-	Play[1] = " /_/ /  /_/ |_/ ||===|==|  </)";
-	Play[2] = "/   /_ / /   /   \\::|:/   /  ";
-
-	string GameSettings[3];
-	GameSettings[0] = "*_  _     *_   _ *_ ___ .   * _  _*";
-	GameSettings[1] = "/*_|_||\\/||_  |_ |_ | | ||\\ |/ _|_ ";
-	GameSettings[2] = "\\_/| ||* ||_  *_||_ | |*|| \\|\\_/*_|";
-
-	string Weapons[3];
-	Weapons[0] = "     ||        _  _  _  _      _   ";
-	Weapons[1] = "[==={o|\\##|##/|_#|_||_||#||\\#||_##>";
-	Weapons[2] = "     || \\/ \\/ |_ | ||  |_|| \\| _|  ";
-
-	string Leave[3];
-	Leave[0] = "   _  _      _     /|  |";
-	Leave[1] = "| |_ |_||  ||_    | |__|";
-	Leave[2] = "|_|_ | | \\/ |_    |/    ";
-
-	string Volume[3];
-	Volume[0] = "     _            _";
-	Volume[1] = "|  || ||  | ||\\/||_";
-	Volume[2] = " \\/ |_||_ |_||  ||_";
-
-	string Controls[3];
-	Controls[0] = " _  _     ___ _  _    _ ";
-	Controls[1] = "|  | ||\\ | | |_|| || |_ ";
-	Controls[2] = "|_ |_|| \\| | | \\|_||_ _|";
-
-	string GameSpeed[3];
-	GameSpeed[0] = " _  _      _   _  _  _  _  _  ";
-	GameSpeed[1] = "/ _|_||\\/||_  |_ |_||_ |_ | \\ ";
-	GameSpeed[2] = "\\_/| ||  ||_   _||  |_ |_ |__|";
-
-	string MobsNumber[3];
-	MobsNumber[0] = "     _  _   _        _ ";
-	MobsNumber[1] = "|\\/|| ||_| |_   |\\ ||_|";
-	MobsNumber[2] = "|  ||_||__| _|  | \\|| \\";
-
-	string Box[3];
-	Box[0] = " ___ ";
-	Box[1] = "[___]";
-	Box[2] = "  %  ";
-
 	showweaponcursor();
-
 	vinesfunction();
-
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 4 + i);
-		cout << Controls[i];
-	}
-
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 8 + i);
-		cout << Volume[i];
-	}
-	
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 12 + i);
-		cout << GameSpeed[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 16 + i);
-		cout << MobsNumber[i];
-	}
-
-	for (j = 8; j <= 16; j = j + 4)
-		for (i = 0; i <= 2; i++)
-		{
-			gotoxy(32, i + j);
-			cout << Box[i];
-		}
-
-	if (xTimes >= 4)
-	{
-		gotoxy(33, 13);
-		cout << (xTimes / 4) * 100;
-	}
-	else
-		if (xTimes < 4)
-		{
-			gotoxy(33, 13);
-			cout << "_";
-			gotoxy(34, 13);
-			cout << (xTimes / 4) * 100;
-		}
-	if (xMobs >= 4)
-	{
-		gotoxy(33, 17);
-		cout << (xMobs / 4) * 100;
-	}
-	else
-		if (xMobs < 4)
-		{
-			gotoxy(33, 17);
-			cout << "_";
-			gotoxy(34, 17);
-			cout << (xMobs / 4) * 100;
-		}
+	gamesettingsmenuoptions();
+	precentageoptions();
 
 
 	bool gamesettingsmenuif = true;
@@ -664,33 +629,61 @@ void gamesettingsmenu()
 		{
 			wateranimation();
 		}
+		time = 42 / (xTimes / 4);
 	}
 	clearall();
 	showweaponcursor();
 	MenuTimer = 0;
 	vinesfunction();
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 4 + i);
-		cout << Play[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 8 + i);
-		cout << GameSettings[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 12 + i);
-		cout << Weapons[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 16 + i);
-		cout << Leave[i];
-	}
+	menuoptions();
+	
 }
 
+void showweaponsbasicstats()
+{
+	gotoxy(1, 20);
+	cout << "WEAPONS        |   |   |    |      |";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
+	gotoxy(17, 4);
+	cout << "    ### ####       ";
+	gotoxy(17, 5);
+	cout << "    ### ####       ";
+	gotoxy(17, 6);
+	cout << "##  ### #### #     ";
+
+	gotoxy(17, 8);
+	cout << "#                  ";
+	gotoxy(17, 9);
+	cout << "###     ##   ####  ";
+	gotoxy(17, 10);
+	cout << "### ### #### ######";
+
+	gotoxy(17, 12);
+	cout << "###          ######";
+	gotoxy(17, 13);
+	cout << "###          ######";
+	gotoxy(17, 14);
+	cout << "### ### #### ######";
+
+	gotoxy(17, 16);
+	cout << "                   ";
+	gotoxy(17, 17);
+	cout << "##  ###      ##    ";
+	gotoxy(17, 18);
+	cout << "### ### #### ######";
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
+	gotoxy(17, 20);
+	cout << "POW";
+	gotoxy(21, 20);
+	cout << "DEF";
+	gotoxy(25, 20);
+	cout << "USES";
+	gotoxy(30, 20);
+	cout << "RECOIL";
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+}
 void showweaponsbooststats()
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);
@@ -804,27 +797,6 @@ void weaponsmenu()
 	PointerAxe[2] = "/===\\        ";
 
 	vinesfunction();
-
-	string Play[3];
-	Play[0] = "   _      _      _______      ";
-	Play[1] = " /_/ /  /_/ |_/ ||===|==|  </)";
-	Play[2] = "/   /_ / /   /   \\::|:/   /  ";
-
-	string GameSettings[3];
-	GameSettings[0] = "*_  _     *_   _ *_ ___ .   * _  _*";
-	GameSettings[1] = "/*_|_||\\/||_  |_ |_ | | ||\\ |/ _|_ ";
-	GameSettings[2] = "\\_/| ||* ||_  *_||_ | |*|| \\|\\_/*_|";
-
-	string Weapons[3];
-	Weapons[0] = "     ||        _  _  _  _      _   ";
-	Weapons[1] = "[==={o|\\##|##/|_#|_||_||#||\\#||_##>";
-	Weapons[2] = "     || \\/ \\/ |_ | ||  |_|| \\| _|  ";
-
-	string Leave[3];
-	Leave[0] = "   _  _      _     /|  |";
-	Leave[1] = "| |_ |_||  ||_    | |__|";
-	Leave[2] = "|_|_ | | \\/ |_    |/    ";
-
 	showweaponcursor();
 
 
@@ -848,44 +820,8 @@ void weaponsmenu()
 		gotoxy(1, 16 + i);
 		cout << PointerAxe[i];
 	}
-	gotoxy(1, 20);
-	cout << "WEAPONS        |   |   |    |      |";
-	gotoxy(17, 20);
-	cout << "POW";
-	gotoxy(17, 4);
-	cout << "    ### ####       ";
-	gotoxy(17, 5);
-	cout << "    ### ####       ";
-	gotoxy(17, 6);
-	cout << "##  ### #### #     ";
-
-	gotoxy(17, 8);
-	cout << "#                  ";
-	gotoxy(17, 9);
-	cout << "###     ##   ####  ";
-	gotoxy(17, 10);
-	cout << "### ### #### ######";
-
-	gotoxy(17, 12);
-	cout << "###          ######";
-	gotoxy(17, 13);
-	cout << "###          ######";
-	gotoxy(17, 14);
-	cout << "### ### #### ######";
-
-	gotoxy(17, 16);
-	cout << "                   ";
-	gotoxy(17, 17);
-	cout << "##  ###      ##    ";
-	gotoxy(17, 18);
-	cout << "### ### #### ######";
-
-	gotoxy(21, 20);
-	cout << "DEF";
-	gotoxy(25, 20);
-	cout << "USES";
-	gotoxy(30, 20);
-	cout << "RECOIL";
+	
+	showweaponsbasicstats();
 
 	bool gamesettingsmenuif = true;
 	while (gamesettingsmenuif == true)
@@ -991,26 +927,7 @@ void weaponsmenu()
 	showweaponcursor();
 	MenuTimer = 0;
 	vinesfunction();
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 4 + i);
-		cout << Play[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 8 + i);
-		cout << GameSettings[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 12 + i);
-		cout << Weapons[i];
-	}
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 16 + i);
-		cout << Leave[i];
-	}
+	menuoptions();
 }
 
 void menu()
@@ -1018,49 +935,12 @@ void menu()
 	clearall();
 
 	vinesfunction();
-
-	string Play[3];
-	Play[0] = "   _      _      _______      ";
-	Play[1] = " /_/ /  /_/ |_/ ||===|==|  </)";
-	Play[2] = "/   /_ / /   /   \\::|:/   /  ";
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 4 + i);
-		cout << Play[i];
-	}
-
-	string GameSettings[3];
-	GameSettings[0] = "*_  _     *_   _ *_ ___ .   * _  _*";
-	GameSettings[1] = "/*_|_||\\/||_  |_ |_ | | ||\\ |/ _|_ ";
-	GameSettings[2] = "\\_/| ||* ||_  *_||_ | |*|| \\|\\_/*_|";
+	menuoptions();
 
 	a =  37;
 	b = 4;
 
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 8 + i);
-		cout << GameSettings[i];
-	}
-	string Weapons[3];
-	Weapons[0] = "     ||        _  _  _  _      _   ";
-	Weapons[1] = "[==={o|\\##|##/|_#|_||_||#||\\#||_##>";
-	Weapons[2] = "     || \\/ \\/ |_ | ||  |_|| \\| _|  ";
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 12 + i);
-		cout << Weapons[i];
-	}
-
-	string Leave[3];
-	Leave[0] = "   _  _      _     /|  |";
-	Leave[1] = "| |_ |_||  ||_    | |__|";
-	Leave[2] = "|_|_ | | \\/ |_    |/    ";
-	for (i = 0; i <= 2; i++)
-	{
-		gotoxy(1, 16 + i);
-		cout << Leave[i];
-	}
+	
 	showweaponcursor();
 	while (menuif == true)
 	{
@@ -1120,8 +1000,75 @@ void menu()
 	}
 }
 
+void indicators()
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
+	for (j = 9; j <= 13; j++)
+		for (i = 1; i <= 49; i++)
+		{
+			if (stones[i][j] == 0)
+			{
+				if (j == 9 || j == 14)
+					stonerarity = 5;
+				if (j == 10 || j == 13)
+					stonerarity = 2;
+				if (j == 11 || j == 12)
+					stonerarity = 0;
+				uniform_int_distribution<> distr(0, 3 + stonerarity);
+				r = distr(eng);
+				if (r == 1)
+					stones[i][j] = r;
+				else
+					stones[i][j] = 2;
+			}
+			if (stones[i][j] == 1)
+			{
+				gotoxy(i, j);
+				cout << ".";
+			}
+		}
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+	shopindicator[0] = " ____ ";
+	shopindicator[1] = "/Shop|";
+	shopindicator[2] = "\\____|";
+	shopindicator[3] = "  ||  ";
+
+	exitindicator[0] = " ____ ";
+	exitindicator[1] = "|Exit\\";
+	exitindicator[2] = "|____/";
+	exitindicator[3] = "  ||  ";
+
+	for (i = 0; i <= 4; i++)
+	{
+		gotoxy(4, 6 + i);
+		cout << shopindicator[i];
+		gotoxy(41, 6 + i);
+		cout << exitindicator[i];
+	}
+	
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);
+	gotoxy(15, 6);
+	cout << "\\\\\\";
+	gotoxy(17, 7);
+	cout << "\\\\\\";
+	gotoxy(15, 9);
+	cout << "\\\\\\";
+	gotoxy(23, 12);
+	cout << "\\\\\\";
+	gotoxy(26, 14);
+	cout << "\\\\";
+	gotoxy(36, 3);
+	cout << "\\\\";
+	gotoxy(37, 4);
+	cout << "\\\\\\";
+	gotoxy(34, 5);
+	cout << "\\\\";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+}
+
 void waveroom()
 {
+	indicators();
 	if (leaveshopapproach == false)
 	{
 		for (i = 0; i < 5; i++)
@@ -1239,22 +1186,22 @@ void setup()
 void shopkeeper()
 {
 	string shopkeeperimg[21];
-	shopkeeperimg[0] = "+  +   _     +    +        _  +   +  +    +  +   + ";
-	shopkeeperimg[1] = "+  +   \\_   &    +      _//   +   +  &    +  +   + ";
-	shopkeeperimg[2] = "+  &    \\ \\____   & ____/ /   +   &       +  &   + ";
-	shopkeeperimg[3] = "+       / ____ \\___/ _____\\   &      _    &      + ";
-	shopkeeperimg[4] = "&      /    _\\     //_    \\      _  {_}   __  $  & ";
-	shopkeeperimg[5] = "      | \\  /_\\ \\___/ /_\\  / |  _|_|(x_x)_/_/|_$$_  ";
-	shopkeeperimg[6] = "       \\ \\|(Q)|/_ _\\|(Q)|/ /  //_/ \\___/ |@|/$$ /| ";
-	shopkeeperimg[7] = "        \\  \\_/|=====|\\_/  /  /______________$$_//  ";
-	shopkeeperimg[8] = "     *   \\    \\\\uuu///   /   |*_______________|/_  ";
-	shopkeeperimg[9] = "    # +#* \\_ ||/nnn\\|| _/#++ ##     / Oooo   |||/| ";
-	shopkeeperimg[10] = "   # ++### *\\\\=====///*  *+#*##    /______ooo||//  ";
-	shopkeeperimg[11] = "  #++#+* +#*#++\\_//#  +##  * # *   |________o_|/   ";
-	shopkeeperimg[12] = "  * +# ++###  ##+ +##+++##++*##+**     _____o______";
-	shopkeeperimg[13] = "  ** +# +##*+ *#++++## + #* ###++*    / /  / /  / /";
-	shopkeeperimg[14] = "  +# *++ * ++###* *## +*++##  ##+#   /_/__/_/__/_/ ";
-	shopkeeperimg[15] = "  # # ++* **#  ## +* **++*  # ++ #   | | \\___/ | |/";
+	shopkeeperimg[0] =  "+  +  _     +    +        _  +    +  +    +  +   + ";
+	shopkeeperimg[1] =  "+  +  \\\\_   &    +      _//  +    +  &    +  +   + ";
+	shopkeeperimg[2] =  "+  &   \\ \\____   & ____/ /   +    &       +  &   + ";
+	shopkeeperimg[3] =  "+      / ____ \\___/ _____\\   &       _    &      + ";
+	shopkeeperimg[4] =  "&     /    _\\     //_    \\       _  {_}   __  $  & ";
+	shopkeeperimg[5] =  "     | \\  /_\\ \\___/ /_\\  / |   _|_|(x_x)_/_/|_$$_  ";
+	shopkeeperimg[6] =  "      \\ \\|(Q)|/_ _\\|(Q)|/ /   //_/ \\___/ |@|/$$ /| ";
+	shopkeeperimg[7] =  "       \\  \\_/|=====|\\_/  /   /______________$$_//  ";
+	shopkeeperimg[8] =  "        \\    \\\\uuu///   /    |*_______________|/_  ";
+	shopkeeperimg[9] =  "    # +#*\\_ ||/nnn\\|| _/#++ #       / Oooo   |||/| ";
+	shopkeeperimg[10] = "   # ++ ##*\\\\\\=====///*  *+#*#     /______ooo||//  ";
+	shopkeeperimg[11] = "  #++#+* +#*#+\\\\_//#  +##  * #*    |________o_|/   ";
+	shopkeeperimg[12] = "  * +# ++###  ##+ +##+++##++*#+*       _____o______";
+	shopkeeperimg[13] = "  ** +# +##*+ *#++++## + #* ##++      / /  / /  / /";
+	shopkeeperimg[14] = "  +# *++ * ++###* *## +*++## ##+     /_/__/_/__/_/ ";
+	shopkeeperimg[15] = "  # # ++* **#  ## +* **++*  # ++     | | \\___/ | |/";
 	shopkeeperimg[16] = "^~~^~~^~~^~~^~~^~~^~~^~~^~~^~~^~~^~~^~~^~~^~~^~~^~~";
 	shopkeeperimg[17] = "                                                   ";
 	shopkeeperimg[18] = "                                                   ";
@@ -1401,7 +1348,10 @@ void weaponsshopkeepermenu()
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 14);
 	gotoxy(1, 3);
-	cout << "PRICE:   " << priceincrease[1] << "p";
+	if (shopcoursorconstant == 10)
+		cout << "PRICE:   " << priceincrease[1] << "p";
+	else
+		cout << "PRICE:   " << priceincrease[2] << "p";
 	gotoxy(38, 3);
 	cout << "SCORE:";
 	if (SCORE < 10)
@@ -1439,44 +1389,8 @@ void weaponsshopkeepermenu()
 		gotoxy(1, 16 + i);
 		cout << PointerAxe[i];
 	}
-	gotoxy(1, 20);
-	cout << "WEAPONS        |   |   |    |      |";
-	gotoxy(17, 20);
-	cout << "POW";
-	gotoxy(17, 4);
-	cout << "    ### ####       ";
-	gotoxy(17, 5);
-	cout << "    ### ####       ";
-	gotoxy(17, 6);
-	cout << "##  ### #### #     ";
-
-	gotoxy(17, 8);
-	cout << "#                  ";
-	gotoxy(17, 9);
-	cout << "###     ##   ####  ";
-	gotoxy(17, 10);
-	cout << "### ### #### ######";
-
-	gotoxy(17, 12);
-	cout << "###          ######";
-	gotoxy(17, 13);
-	cout << "###          ######";
-	gotoxy(17, 14);
-	cout << "### ### #### ######";
-
-	gotoxy(17, 16);
-	cout << "                   ";
-	gotoxy(17, 17);
-	cout << "##  ###      ##    ";
-	gotoxy(17, 18);
-	cout << "### ### #### ######";
-
-	gotoxy(21, 20);
-	cout << "DEF";
-	gotoxy(25, 20);
-	cout << "USES";
-	gotoxy(30, 20);
-	cout << "RECOIL";
+	
+	showweaponsbasicstats();
 
 	weaponsshopkeepermenuif = true;
 	while (weaponsshopkeepermenuif == true)
@@ -1872,6 +1786,19 @@ void shop()
 						gotoxy(1, 22);
 					    cout << "just to let you go...";
 						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+						angryshopkeeper = true;
+						
+						zT = 1;
+						for (j = 2; j <= 18; j = j + 16)
+							for (i = 5; i <= 45; i = i + 20)
+							{
+								Tx1[zT] = TNPCx[zT] = i;
+								Ty1[zT] = TNPCy[zT] = j;
+								TT[zT] = 1;
+								zT++;
+							}
+						zT = 1;
+						TNPCnr = 6;
 					}
 					dialog = 4;
 				}
@@ -1922,15 +1849,15 @@ void shop()
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 					gotoxy(2 + i, 20);
 					cout << "~";
-					gotoxy(16, 12);
+					gotoxy(15, 12);
 					cout << "vvv";
-					gotoxy(16, 13);
+					gotoxy(15, 13);
 					cout << "^^^";
 					if (leaveshopapproach == true && didbuysomething == false)
 						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
-					gotoxy(12, 10);
+					gotoxy(11, 10);
 					cout << "X";
-					gotoxy(22, 10);
+					gotoxy(21, 10);
 					cout << "X";
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 27);
 					if (dialog == 4 || dialog == 5 || dialog == 6)
@@ -1965,15 +1892,15 @@ void shop()
 						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 9);
 						gotoxy(i, 20);
 						cout << "~~";
-						gotoxy(16, 12);
+						gotoxy(15, 12);
 						cout << "uuu";
-						gotoxy(16, 13);
+						gotoxy(15, 13);
 						cout << "nnn";
 						if (leaveshopapproach == true && didbuysomething == false)
 							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
-						gotoxy(12, 10);
+						gotoxy(11, 10);
 						cout << "Q";
-						gotoxy(22, 10);
+						gotoxy(21, 10);
 						cout << "Q";
 
 						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
@@ -4369,7 +4296,6 @@ void draw()
 		}
 	else
 	{
-		if (waveroomif == false)
 			if (f == 1)
 				y--;
 			else
@@ -4578,9 +4504,33 @@ void draw()
 	}
 	if (x == 0 || y == 0 || x == 50 || y == 20)
 	{
-		if (stoptimeif == false && waveroomif == false)
+		if (stoptimeif == false && waveroomif == false || angryshopkeeper == true)
 		{
 			PLAYERdeath = true;
+			if (x == 50 && angryshopkeeper == true)
+			{
+				angryshopkeeper = false;
+				waveroomif = false;
+				clearwaveroom = true;
+				for (j = 1; j <= 6; j++)
+					TAIdeath();
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 23);
+				for (i = 0; i < 5; i++)
+				{
+					gotoxy(x, i + 8);
+					cout << "<";
+					gotoxy(x - 50, i + 8);
+					cout << ">";
+				}
+
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+				for (i = 1; i <= 49; i++)
+					for (j = 1; j <= 19; j++)
+					{
+						gotoxy(i, j);
+						cout << " ";
+					}
+			}
 		}
 		else
 		{
@@ -4593,6 +4543,7 @@ void draw()
 					else
 						if (x == 50)
 						{
+							angryshopkeeper = false;
 							waveroomif = false;
 							clearwaveroom = true;
 							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 23);
@@ -4603,7 +4554,13 @@ void draw()
 								gotoxy(x - 50, i + 8);
 								cout << ">";
 							}
-							playerrespawn();
+							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+							for (i = 1; i <= 49; i++)
+								for (j = 1; j <= 19; j++)
+								{
+									gotoxy(i, j);
+									cout << " ";
+								}
 						}
 				}
 			}
@@ -4635,6 +4592,8 @@ void draw()
 							cout << "^";
 							y = 1;
 						}
+			if (leaveshopapproach == true)
+				x = 3;
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		}
 	}
@@ -4732,6 +4691,7 @@ int main()
 		goto stopgame;
 	setup();
 	playerrespawn();
+	time = 42 / (xTimes / 4);
 	while (!gameOver)
 	{
 		wave();
@@ -4765,13 +4725,16 @@ int main()
 			}
 			gameOver = false;
 		}
-		if (stoptimeif == false && waveroomif == false)
+		if (stoptimeif == false)
 		{
-			SAI();
-			TAI();
-			AAI();
-			VAI();
-			WAI();
+			if (waveroomif == false || angryshopkeeper == true)
+			{
+				SAI();
+				TAI();
+				AAI();
+				VAI();
+				WAI();
+			}
 		}
 		else
 		{
@@ -4781,11 +4744,17 @@ int main()
 		}
 		Stats();
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-		Sleep(44 / (xTimes / 4));
+		Sleep(time);
 	}
 	restartall();
 	goto playerdeath;
 stopgame:;
+	DEVMODE desiredMode = { 0 };
+	desiredMode.dmSize = sizeof(DEVMODE);
+	desiredMode.dmPelsWidth = 1920;
+	desiredMode.dmPelsHeight = 1080;
+	desiredMode.dmFields = DM_PELSHEIGHT | DM_PELSWIDTH;
+	LONG res = ChangeDisplaySettings(&desiredMode, CDS_UPDATEREGISTRY | CDS_GLOBAL | CDS_RESET);
 }
 
 
